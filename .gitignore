@@ -1,2 +1,5 @@
 data/**
 !data/download.py
+.ipynb_checkpoints
+.nvim.lua
+.project_env
