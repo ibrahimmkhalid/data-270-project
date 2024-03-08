@@ -39,7 +39,7 @@ df = pd.DataFrame(columns=["overall", "verified", "reviewText", "summary", "sent
 
 # %%
 peek = 1_000_000
-stop = 10
+stop = 1000
 i = 0
 
 for review in parse("./data/All_Amazon_Review.json.gz"):
@@ -62,10 +62,21 @@ df.head()
 df.shape
 
 # %%
-print("size of df in bytes: ", df.memory_usage(index=True).sum())
+df_size =  df.memory_usage(index=True).sum()
+print("size of df in bytes: ", df_size)
 
 # %%
-df = getDF("./data/All_Amazon_Review.json.gz", 10)
-print("size of df in bytes: ", df.memory_usage(index=True).sum())
+df1 = getDF("./data/All_Amazon_Review.json.gz", stop)
 
+# %%
+df1.head()
 
+# %%
+df1.shape
+
+# %%
+df1_size =  df1.memory_usage(index=True).sum()
+print("size of df1 in bytes: ", df1_size)
+
+# %%
+print("ratio of reading the whole file vs parsing the required columns: ", df1_size / df_size)
