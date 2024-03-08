@@ -7,6 +7,8 @@
         - how many reviews are verified
         - how many reviews have no reviewText
         - how many reviews have no summary
+- ./import_without_extra.ipynb
+    - explores the benefit of parsing while reading the file vs reading the whole dataframe
 ```
 
 ---
