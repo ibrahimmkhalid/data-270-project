@@ -1,5 +1,6 @@
 data/**
 !data/download.py
+!data/combined.csv
 .ipynb_checkpoints
 .nvim.lua
 .project_env
