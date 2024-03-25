@@ -13,61 +13,55 @@
 # ---
 
 # %%
+import warnings
+warnings.filterwarnings("ignore")
 import pandas as pd
-import json
-import gzip
+# import json
+# import gzip
 import nltk
 from nltk.corpus import stopwords
 nltk.download("stopwords")
-import re
-
-
-def parse(path):
-    g = gzip.open(path, "rb")
-    for l in g:
-        yield json.loads(l)
-
-
-def getDF(path, stop=0):
-    i = 0
-    df = {}
-    for d in parse(path):
-        df[i] = d
-        i += 1
-        if stop > 0 and i == stop:
-            break
-    return pd.DataFrame.from_dict(df, orient="index")
+# import re
 
 # %%
-df = pd.DataFrame(columns=["verified", "text", "sentiment"])
+data_path = "./data/combined.csv"
+df = pd.read_csv(data_path, low_memory=False)
+print(df.isna().sum() / len(df) * 100)
 
 # %%
-peek = 1_000
-stop = peek * 10
-i = 0
+print(df.isna().sum())
 
-for review in parse("./data/All_Amazon_Review.json.gz"):
-    i += 1
-    if stop > 0 and stop == i:
-        break
-    if i % peek == 0:
-        print(f"Processed {i / peek:.2f} million reviews")
-
-    if "overall" not in review or "verified" not in review or "reviewText" not in review or "summary" not in review:
-        continue
-    text = review["summary"] + " " + review["reviewText"]
-    text = re.sub(r"[^a-zA-Z\s]", "", text) # remove non-alphabetic characters
-    text = text.lower()
-    # remove stopwords
-    text = " ".join([word for word in text.split() if word not in stopwords.words("english")])
-
-
-    df.loc[i] = [
-        review["verified"],
-        text,
-        "positive" if review["overall"] > 3 else "negative" if review["overall"] < 3 else "neutral",
-    ]
-
+# %%
+shpae = df.shape
+print(df.isna().sum().sum() / (shpae[0] * shpae[1]) * 100)
 
 # %%
 df.head()
+
+# %%
+df = df[["overall", "reviewText", "summary", "verified"]]
+
+# %%
+print(df.isna().sum() / len(df) * 100)
+
+# %%
+df = df.dropna()
+
+# %%
+print(df.isna().sum() / len(df) * 100)
+
+# %%
+df["sentiment"] = df["overall"].apply(lambda x: 1 if x > 3 else -1 if x < 3 else 0)
+df.head()
+
+# %%
+df["sentiment"].value_counts()
+
+# %%
+df.drop("overall", axis=1, inplace=True)
+
+# %%
+df.head()
+
+# %%
+
