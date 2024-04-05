@@ -2,12 +2,17 @@ import pandas as pd
 import nltk
 import re
 import random
-import numpy as np
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.svm import SVC
-from sklearn.metrics import classification_report, accuracy_score, f1_score, precision_score, recall_score
+from sklearn.metrics import (
+    classification_report,
+    accuracy_score,
+    f1_score,
+    precision_score,
+    recall_score,
+)
 from sklearn.model_selection import GridSearchCV
 from nltk.corpus import stopwords
 
@@ -23,8 +28,7 @@ bow = "bow"
 tfidf = "tfidf"
 random_state = 42
 small_n = 2500
-large_n = 5000
-vlarge_n = 40000
+large_n = 40000
 random.seed(random_state)
 data_path = "./data/combined.csv"
 
@@ -161,6 +165,7 @@ def pipeline(cols, test_size, proc, vectorizer, df=df, random_state=random_state
     x_test = vectorizer.transform(x_test[textcol])
     return x_train, x_test, y_train, y_test
 
+
 # %% [markdown]
 # ## Small Balanced Dataset
 
@@ -191,8 +196,14 @@ if code_gen:
     for col in col_comb:
         for proc in proc_comb:
             for vectorizer in vectorizer_comb:
-                params = {"col": col, "test_size": 0.25, "proc": proc, "vectorizer": vectorizer}
-                print(f"""
+                params = {
+                    "col": col,
+                    "test_size": 0.25,
+                    "proc": proc,
+                    "vectorizer": vectorizer,
+                }
+                print(
+                    f"""
 # %%
 x_train, x_test, y_train, y_test = pipeline({col}, 0.25, {proc}, {vectorizer}, df_balanced_small)
 grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
@@ -201,7 +212,8 @@ y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
 accuracy = grid.score(x_test, y_test)
 compare_list.loc[len(compare_list)] = [grid.best_params_, {params}, accuracy]
-""")
+"""
+                )
 
 
 # %%
@@ -549,188 +561,8 @@ compare_list.to_csv("./results/svm_compare_list_small_balanced.csv", index=False
 # - Models performed better when the C value was = 1
 
 # %%
-df_balanced_vlarge = (
-    df.groupby("sentiment")
-    .apply(lambda x: x.sample(n=vlarge_n, random_state=random_state, replace=True))
-    .reset_index(drop=True)
-)
-svm_compare_list = pd.DataFrame(columns=["Model", "Accuracy Score", "Precision", "Recall", "F1Score"])
-
-# %%
-svc_balanced_small = SVC(C=1, gamma=1, kernel="rbf")
-x_train, x_test, y_train, y_test = pipeline(
-    ["reviewTextWithSummary"], 0.25, None, tfidf, df_balanced_vlarge
-)
-svc_balanced_small.fit(x_train, y_train)
-y_pred = svc_balanced_small.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred, average="weighted")
-recall = recall_score(y_test, y_pred, average="weighted")
-f1 = f1_score(y_test, y_pred, average="weighted")
-svm_compare_list.loc[len(svm_compare_list)] = ["SVC Balanced Small", accuracy, precision, recall, f1]
-
-# %% [markdown]
-# ## Large Balanced Dataset
-
-# %%
-df_balanced_large = (
-    df.groupby("sentiment")
-    .apply(lambda x: x.sample(n=large_n, random_state=random_state, replace=True))
-    .reset_index(drop=True)
-)
-
-
-# %%
-param_grid = {
-    "C": [0.1, 0.5, 1, 5, 10],
-    "gamma": [1, 0.1, 0.01, 0.001, 0.0001],
-    "kernel": ["rbf"],
-}
-n_jobs = -1
-verbose = 0
-cv = 3
-
-# %%
-compare_list = pd.DataFrame(columns=["Params", "Config", "Accuracy Score"])
-
-# %%
-code_gen = False
-proc_comb = [None, baseline, stem, lem]
-vectorizer_comb = [bow, tfidf]
-col = ["reviewTextWithSummary"]
-if code_gen:
-    for proc in proc_comb:
-        for vectorizer in vectorizer_comb:
-            params = {"col": col, "test_size": 0.25, "proc": proc, "vectorizer": vectorizer}
-            print(f"""
-# %%
-x_train, x_test, y_train, y_test = pipeline({col}, 0.25, {proc}, {vectorizer}, df_balanced_small)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {params}, accuracy]
-""")
-
-# %%
-# below is code genderated by above cell, to make changes to the code, edit the
-# above cell and run it, pasting its contents between the markers
-# %%
-####### START OF GENERATED CODE #######
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, None, bow, df_balanced_small)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'bow'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, None, tfidf, df_balanced_small)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'tfidf'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, baseline, bow, df_balanced_small)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'bow'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, baseline, tfidf, df_balanced_small)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'tfidf'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, stem, bow, df_balanced_small)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'bow'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, stem, tfidf, df_balanced_small)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'tfidf'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, lem, bow, df_balanced_small)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'bow'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, lem, tfidf, df_balanced_small)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'tfidf'}, accuracy]
-#######  END OF GENERATED CODE  #######
-# %%
-compare_list = compare_list.sort_values(
-    by="Accuracy Score", ascending=False
-).reset_index(drop=True)
-display(compare_list)
-
-# %%
-print("Best Configuration on larger dataset")
-print("Score :: ", compare_list.loc[0]["Accuracy Score"])
-print("SVC   :: ", compare_list.loc[0]["Params"])
-print("data  :: ", compare_list.loc[0]["Config"])
-
-# %%
-compare_list.to_csv("./results/svm_compare_list_large_balanced.csv", index=False)
-
-# %% [markdown]
-# ...
-# %%
-svc_balanced_large = SVC(C=1, gamma=1, kernel="rbf")
-x_train, x_test, y_train, y_test = pipeline(
-    ["reviewTextWithSummary"], 0.25, None, tfidf, df_balanced_vlarge
-)
-svc_balanced_large.fit(x_train, y_train)
-y_pred = svc_balanced_large.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred, average="weighted")
-recall = recall_score(y_test, y_pred, average="weighted")
-f1 = f1_score(y_test, y_pred, average="weighted")
-svm_compare_list.loc[len(svm_compare_list)] = ["SVC Balanced Large", accuracy, precision, recall, f1]
-
-# %%
 # 3 times the small_n to create an unbalanced dataset of the same size as the balanced dataset
-df_unbalanced_small = df.sample(n=3*small_n, random_state=random_state, replace=True)
+df_unbalanced_small = df.sample(n=3 * small_n, random_state=random_state, replace=True)
 df_unbalanced_small["sentiment"].value_counts()
 
 # %% [markdown]
@@ -763,8 +595,14 @@ if code_gen:
     for col in col_comb:
         for proc in proc_comb:
             for vectorizer in vectorizer_comb:
-                params = {"col": col, "test_size": 0.25, "proc": proc, "vectorizer": vectorizer}
-                print(f"""
+                params = {
+                    "col": col,
+                    "test_size": 0.25,
+                    "proc": proc,
+                    "vectorizer": vectorizer,
+                }
+                print(
+                    f"""
 # %%
 x_train, x_test, y_train, y_test = pipeline({col}, 0.25, {proc}, {vectorizer}, df_unbalanced_small)
 grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
@@ -773,12 +611,14 @@ y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
 accuracy = grid.score(x_test, y_test)
 compare_list.loc[len(compare_list)] = [grid.best_params_, {params}, accuracy]
-""")
+"""
+                )
 
 # %%
 # below is code genderated by above cell, to make changes to the code, edit the
 # above cell and run it, pasting its contents between the markers
 # %%
+
 ####### START OF GENERATED CODE #######
 x_train, x_test, y_train, y_test = pipeline(['reviewText'], 0.25, None, bow, df_unbalanced_small)
 grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
@@ -1116,13 +956,35 @@ print("data  :: ", compare_list.loc[0]["Config"])
 # %% [markdown]
 # ...
 
+
+# %% [markdown]
+# ## Comparing the best models from each experiment on the full dataset
 # %%
-df_unbalanced_vlarge = df.sample(n=3*vlarge_n, random_state=random_state, replace=True)
+df_balanced_large = (
+    df.groupby("sentiment")
+    .apply(lambda x: x.sample(n=large_n, random_state=random_state, replace=True))
+    .reset_index(drop=True)
+)
+
+# %%
+svc_balanced_small = SVC(C=1, gamma=1, kernel="rbf")
+x_train, x_test, y_train, y_test = pipeline(
+    ["reviewTextWithSummary"], 0.25, None, tfidf, df_balanced_large
+)
+svc_balanced_small.fit(x_train, y_train)
+y_pred = svc_balanced_small.predict(x_test)
+print(classification_report(y_test, y_pred))
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred, average="weighted")
+recall = recall_score(y_test, y_pred, average="weighted")
+f1 = f1_score(y_test, y_pred, average="weighted")
+# %%
+df_unbalanced_large = df.sample(n=3 * large_n, random_state=random_state, replace=True)
 
 # %%
 svc_unbalanced_small = SVC(C=10, gamma=0.01, kernel="rbf")
 x_train, x_test, y_train, y_test = pipeline(
-    ["reviewTextWithSummary"], 0.25, None, bow, df_unbalanced_vlarge
+    ["reviewTextWithSummary"], 0.25, None, bow, df_unbalanced_large
 )
 svc_unbalanced_small.fit(x_train, y_train)
 y_pred = svc_unbalanced_small.predict(x_test)
@@ -1131,158 +993,3 @@ accuracy = accuracy_score(y_test, y_pred)
 precision = precision_score(y_test, y_pred, average="weighted")
 recall = recall_score(y_test, y_pred, average="weighted")
 f1 = f1_score(y_test, y_pred, average="weighted")
-svm_compare_list.loc[len(svm_compare_list)] = ["SVC unbalanced Small", accuracy, precision, recall, f1]
-
-
-# %% [markdown]
-# ## Large Unbalanced Dataset
-
-# %%
-df_unbalanced_large = df.sample(n=3*large_n, random_state=random_state, replace=True)
-df_unbalanced_large["sentiment"].value_counts()
-
-# %%
-param_grid = {
-    "C": [0.1, 1, 10, 100, 1000],
-    "gamma": [1, 0.1, 0.01, 0.001, 0.0001],
-    "kernel": ["rbf"],
-}
-
-n_jobs = -1
-verbose = 0
-cv = 3
-
-# %%
-compare_list = pd.DataFrame(columns=["Params", "Config", "Accuracy Score"])
-
-# %%
-code_gen = False
-proc_comb = [None, baseline, stem, lem]
-vectorizer_comb = [bow, tfidf]
-col = ["reviewTextWithSummary"]
-if code_gen:
-    for proc in proc_comb:
-        for vectorizer in vectorizer_comb:
-            params = {"col": col, "test_size": 0.25, "proc": proc, "vectorizer": vectorizer}
-            print(f"""
-# %%
-x_train, x_test, y_train, y_test = pipeline({col}, 0.25, {proc}, {vectorizer}, df_unbalanced_large)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {params}, accuracy]
-""")
-
-# %%
-# below is code genderated by above cell, to make changes to the code, edit the
-# above cell and run it, pasting its contents between the markers
-
-# %%
-####### START OF GENERATED CODE #######
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, None, bow, df_unbalanced_large)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'bow'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, None, tfidf, df_unbalanced_large)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'tfidf'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, baseline, bow, df_unbalanced_large)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'bow'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, baseline, tfidf, df_unbalanced_large)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'tfidf'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, stem, bow, df_unbalanced_large)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'bow'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, stem, tfidf, df_unbalanced_large)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'tfidf'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, lem, bow, df_unbalanced_large)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'bow'}, accuracy]
-
-
-# %%
-x_train, x_test, y_train, y_test = pipeline(['reviewTextWithSummary'], 0.25, lem, tfidf, df_unbalanced_large)
-grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_jobs, cv=cv)
-grid.fit(x_train, y_train)
-y_pred = grid.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'tfidf'}, accuracy]
-#######  END OF GENERATED CODE  #######
-
-# %%
-compare_list = compare_list.sort_values(
-    by="Accuracy Score", ascending=False
-).reset_index(drop=True)
-display(compare_list)
-
-# %%
-compare_list.to_csv("./results/svm_compare_list_large_unbalanced.csv", index=False)
-
-# %%
-print("Best Configuration on larger dataset")
-print("Score :: ", compare_list.loc[0]["Accuracy Score"])
-print("SVC   :: ", compare_list.loc[0]["Params"])
-print("data  :: ", compare_list.loc[0]["Config"])
-
-# %%
-svc_unbalanced_large = SVC(C=10, gamma=0.1, kernel="rbf")
-x_train, x_test, y_train, y_test = pipeline(
-    ["reviewTextWithSummary"], 0.25, None, tfidf, df_unbalanced_small
-)
-svc_unbalanced_large.fit(x_train, y_train)
-y_pred = svc_unbalanced_large.predict(x_test)
-print(classification_report(y_test, y_pred))
-
-# %% [markdown]
-# ## Comparing the best models from each experiment on the full dataset
