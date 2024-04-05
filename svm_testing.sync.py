@@ -2,6 +2,7 @@ import pandas as pd
 import nltk
 import re
 import random
+import numpy as np
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
@@ -15,6 +16,7 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import GridSearchCV
 from nltk.corpus import stopwords
+from scipy.sparse import hstack
 
 nltk.download("punkt")
 nltk.download("stopwords")
@@ -27,7 +29,7 @@ lem = "lem"
 bow = "bow"
 tfidf = "tfidf"
 random_state = 42
-small_n = 2500
+small_n = 5000
 large_n = 40000
 random.seed(random_state)
 data_path = "./data/combined.csv"
@@ -142,6 +144,10 @@ def apply_preprocessing(proc, x_train, x_test):
     )
     return x_train, x_test
 
+# %%
+def add_col(x, col):
+    col = np.array([col]).T
+    return hstack([x, col])
 
 # %%
 def pipeline(cols, test_size, proc, vectorizer, df=df, random_state=random_state):
@@ -161,8 +167,15 @@ def pipeline(cols, test_size, proc, vectorizer, df=df, random_state=random_state
         vectorizer = TfidfVectorizer()
     else:
         raise ValueError("Invalid Vectorizer")
-    x_train = vectorizer.fit_transform(x_train[textcol])
-    x_test = vectorizer.transform(x_test[textcol])
+    x_train_ = vectorizer.fit_transform(x_train[textcol])
+    x_test_ = vectorizer.transform(x_test[textcol])
+    
+    if "verified" in cols:
+        x_train = add_col(x_train_, x_train["verified"])
+        x_test = add_col(x_test_, x_test["verified"])
+    else:
+        x_train = x_train_
+        x_test = x_test_
     return x_train, x_test, y_train, y_test
 
 
@@ -993,3 +1006,12 @@ accuracy = accuracy_score(y_test, y_pred)
 precision = precision_score(y_test, y_pred, average="weighted")
 recall = recall_score(y_test, y_pred, average="weighted")
 f1 = f1_score(y_test, y_pred, average="weighted")
+
+# # %% [markdown]
+# # Using svc_balanced_small
+#
+# # %%
+# x_train, x_test, y_train, y_test = my_train_test_split(["reviewTextWithSummary"], 0.25, df, random_state)
+# vectorizer = TfidfVectorizer()
+# x_train = vectorizer.fit_transform(x_train)
+# x_test = vectorizer.transform(x_test)
