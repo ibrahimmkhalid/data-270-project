@@ -144,10 +144,12 @@ def apply_preprocessing(proc, x_train, x_test):
     )
     return x_train, x_test
 
+
 # %%
 def add_col(x, col):
     col = np.array([col]).T
     return hstack([x, col])
+
 
 # %%
 def pipeline(cols, test_size, proc, vectorizer, df=df, random_state=random_state):
@@ -169,7 +171,7 @@ def pipeline(cols, test_size, proc, vectorizer, df=df, random_state=random_state
         raise ValueError("Invalid Vectorizer")
     x_train_ = vectorizer.fit_transform(x_train[textcol])
     x_test_ = vectorizer.transform(x_test[textcol])
-    
+
     if "verified" in cols:
         x_train = add_col(x_train_, x_train["verified"])
         x_test = add_col(x_test_, x_test["verified"])
@@ -568,10 +570,17 @@ print("data  :: ", compare_list.loc[0]["Config"])
 compare_list.to_csv("./results/svm_compare_list_small_balanced.csv", index=False)
 
 # %% [markdown]
-# - Across all tests, reviewText with summary performed better than without summary.
-# - Whether the verified column was included or not did not have any significant impact on the accuracy.
+# - Across all tests, reviewText with summary performed better than reviewText without summary.
 # - The RBF kernel performed better than the linear kernel in almost all cases.
-# - Models performed better when the C value was = 1
+# - The top configuration was as follows:
+#   - Data::
+#     - Columns used: reviewTextWithSummary
+#     - Text preprocessing step: None
+#     - Text vectorizer: tfidf
+#   - SVC:: 
+#     - C=1
+#     - gamma=1
+#     - kernel=rbf
 
 # %%
 # 3 times the small_n to create an unbalanced dataset of the same size as the balanced dataset
@@ -967,7 +976,18 @@ print("SVC   :: ", compare_list.loc[0]["Params"])
 print("data  :: ", compare_list.loc[0]["Config"])
 
 # %% [markdown]
-# ...
+# - Across all tests, reviewText with summary performed better than reviewText without summary.
+# - The RBF kernel performed better than the linear kernel in every case with the unbalanced dataset.
+# - The top configuration was as follows:
+#   - Data::
+#     - Columns used: reviewTextWithSummary
+#     - Text preprocessing step: None
+#     - Text vectorizer: tfidf
+#   - SVC:: 
+#     - C=10
+#     - gamma=0.1
+#     - kernel=rbf
+
 
 
 # %% [markdown]
@@ -980,32 +1000,34 @@ df_balanced_large = (
 )
 
 # %%
-svc_balanced_small = SVC(C=1, gamma=1, kernel="rbf")
-x_train, x_test, y_train, y_test = pipeline(
-    ["reviewTextWithSummary"], 0.25, None, tfidf, df_balanced_large
-)
-svc_balanced_small.fit(x_train, y_train)
-y_pred = svc_balanced_small.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred, average="weighted")
-recall = recall_score(y_test, y_pred, average="weighted")
-f1 = f1_score(y_test, y_pred, average="weighted")
-# %%
 df_unbalanced_large = df.sample(n=3 * large_n, random_state=random_state, replace=True)
 
 # %%
-svc_unbalanced_small = SVC(C=10, gamma=0.01, kernel="rbf")
-x_train, x_test, y_train, y_test = pipeline(
-    ["reviewTextWithSummary"], 0.25, None, bow, df_unbalanced_large
+svc_balanced_small = SVC(C=1, gamma=1, kernel="rbf")
+x_balanced_train, x_balanced_test, y_balanced_train, y_balanced_test = pipeline(
+    ["reviewTextWithSummary"], 0.25, None, tfidf, df_balanced_large
 )
-svc_unbalanced_small.fit(x_train, y_train)
-y_pred = svc_unbalanced_small.predict(x_test)
-print(classification_report(y_test, y_pred))
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred, average="weighted")
-recall = recall_score(y_test, y_pred, average="weighted")
-f1 = f1_score(y_test, y_pred, average="weighted")
+svc_balanced_small.fit(x_balanced_train, y_balanced_train)
+y_balanced_pred = svc_balanced_small.predict(x_balanced_test)
+print(classification_report(y_balanced_test, y_balanced_pred))
+accuracy = accuracy_score(y_balanced_test, y_balanced_pred)
+precision = precision_score(y_balanced_test, y_balanced_pred, average="weighted")
+recall = recall_score(y_balanced_test, y_balanced_pred, average="weighted")
+f1 = f1_score(y_balanced_test, y_balanced_pred, average="weighted")
+
+
+# %%
+svc_unbalanced_small = SVC(C=10, gamma=0.01, kernel="rbf")
+x_unbalanced_small_train, x_unbalanced_small_test, y_unbalanced_small_train, y_unbalanced_small_test = pipeline(
+    ["reviewTextWithSummary"], 0.25, None, tfidf, df_unbalanced_large
+)
+svc_unbalanced_small.fit(x_unbalanced_small_train, y_unbalanced_small_train)
+y_unbalanced_small_pred = svc_unbalanced_small.predict(x_unbalanced_small_test)
+print(classification_report(y_unbalanced_small_test, y_unbalanced_small_pred))
+accuracy = accuracy_score(y_unbalanced_small_test, y_unbalanced_small_pred)
+precision = precision_score(y_unbalanced_small_test, y_unbalanced_small_pred, average="weighted")
+recall = recall_score(y_unbalanced_small_test, y_unbalanced_small_pred, average="weighted")
+f1 = f1_score(y_unbalanced_small_test, y_unbalanced_small_pred, average="weighted")
 
 # # %% [markdown]
 # # Using svc_balanced_small
