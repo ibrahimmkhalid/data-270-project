@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report
+from sklearn.metrics import f1_score
 from sklearn.model_selection import GridSearchCV
 from nltk.corpus import stopwords
 from scipy.sparse import hstack
@@ -192,7 +193,9 @@ verbose = 0
 cv = 3
 
 # %%
-compare_list = pd.DataFrame(columns=["Grid Params", "Data config and preprocessing", "Grid Score"])
+compare_list = pd.DataFrame(
+    columns=["Grid Params", "Data config and preprocessing", "Grid Score"]
+)
 
 # %%
 code_gen = False
@@ -552,10 +555,8 @@ compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWi
 #######  END OF GENERATED CODE  #######
 
 # %%
-pd.set_option('display.max_colwidth', None)
-compare_list = compare_list.sort_values(
-    by="Grid Score", ascending=False
-).reset_index(drop=True)
+pd.set_option("display.max_colwidth", None)
+compare_list = compare_list.sort_values(by="Grid Score", ascending=False).reset_index(drop=True)
 display(compare_list)
 
 # %%
@@ -563,8 +564,6 @@ print(f"Best Configuration on testing dataset (size={len(df_testing)}):")
 print("Score :: ", compare_list.loc[0]["Grid Score"])
 print("SVC   :: ", compare_list.loc[0]["Grid Params"])
 print("data  :: ", compare_list.loc[0]["Data config and preprocessing"])
-# %%
-compare_list.to_csv("./results/svm_compare_list.csv", index=False)
 
 # %% [markdown]
 # - Across all tests, reviewText with summary performed better than reviewText without summary.
@@ -652,6 +651,12 @@ print(classification_report(y_test, y_pred))
 # ### Baseline with tfidf
 
 # %%
+print("Best configuration using baseline text preprocessing")
+print("Score :: ", compare_list.loc[4]["Grid Score"])
+print("SVC   :: ", compare_list.loc[4]["Grid Params"])
+print("data  :: ", compare_list.loc[4]["Data config and preprocessing"])
+
+# %%
 x_train, x_test, y_train, y_test = train_test_split(
     df_large[["reviewTextWithSummary"]],
     df_large["sentiment"],
@@ -697,6 +702,13 @@ print(classification_report(y_test, y_pred))
 
 # %% [markdown]
 # ### Lemmatized with tfidf
+
+# %%
+print("Best configuration using baseline text preprocessing")
+print("Score :: ", compare_list.loc[6]["Grid Score"])
+print("SVC   :: ", compare_list.loc[6]["Grid Params"])
+print("data  :: ", compare_list.loc[6]["Data config and preprocessing"])
+
 # %%
 x_train, x_test, y_train, y_test = train_test_split(
     df_large[["reviewTextWithSummary"]],
@@ -742,6 +754,13 @@ print(classification_report(y_test, y_pred))
 
 # %% [markdown]
 # ### Stemmed with tfidf
+
+# %%
+print("Best configuration using baseline text preprocessing")
+print("Score :: ", compare_list.loc[8]["Grid Score"])
+print("SVC   :: ", compare_list.loc[8]["Grid Params"])
+print("data  :: ", compare_list.loc[8]["Data config and preprocessing"])
+
 # %%
 x_train, x_test, y_train, y_test = train_test_split(
     df_large[["reviewTextWithSummary"]],
@@ -815,7 +834,6 @@ y_pred_lematized_tfidf = svc_lematized_tfidf.predict(x_lematized_tfidf)
 y_pred_stemmed_tfidf = svc_stemmed_tfidf.predict(x_stemmed_tfidf)
 
 # %%
-from sklearn.metrics import f1_score
 print("Top Config")
 print(classification_report(y, y_pred_top_config))
 score_top_config = f1_score(y, y_pred_top_config, average="weighted")
@@ -841,9 +859,18 @@ score_stemmed_tfidf = f1_score(y, y_pred_stemmed_tfidf, average="weighted")
 
 # %%
 print("Scores")
-print("Top Config           :: ", score_top_config)
-print("Baseline with tfidf  :: ", score_baseline_tfidf)
-print("Lematized with tfidf :: ", score_lematized_tfidf)
-print("Stemmed with tfidf   :: ", score_stemmed_tfidf)
+print("Overall top config (No preprocessing) :: ", score_top_config)
+print("Baseline preprocessing top config     :: ", score_baseline_tfidf)
+print("Lemmatized preprocessing top config   :: ", score_lematized_tfidf)
+print("Stemmed preprocessing top config      :: ", score_stemmed_tfidf)
 
+# %% [markdown]
+# ## Conclusion
+# - Performance ranking is the same as the experimental results from before
+# - All selected models perform at a very high level, all around 88% accurate with F1 scores around 0.9
+# - The overall top performing model was the one that did not use any text preprocessing with the following:
+#   - Text was not preprocessesed
+#   - Text was vectorized using the tfidf vectorizer
+#   - SVC with C=1, gamma=1, kernel=rbf
+#   - Weighted F1 score = 0.9067
 
