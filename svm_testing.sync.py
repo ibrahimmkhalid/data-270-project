@@ -23,8 +23,8 @@ lem = "lem"
 bow = "bow"
 tfidf = "tfidf"
 random_state = 42
-testing_n = 50
-large_n = 100
+testing_n = 5000
+large_n = 50000
 random.seed(random_state)
 data_path = "./data/combined.csv"
 
@@ -192,7 +192,7 @@ verbose = 0
 cv = 3
 
 # %%
-compare_list = pd.DataFrame(columns=["Params", "Config", "Accuracy Score"])
+compare_list = pd.DataFrame(columns=["Grid Params", "Data config and preprocessing", "Grid Score"])
 
 # %%
 code_gen = False
@@ -210,7 +210,6 @@ if code_gen:
             for vectorizer in vectorizer_comb:
                 params = {
                     "col": col,
-                    "test_size": 0.25,
                     "proc": proc,
                     "vectorizer": vectorizer,
                 }
@@ -222,8 +221,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {params}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {params}, grid_score]
 """
                 )
 
@@ -238,8 +237,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'proc': None, 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -248,8 +247,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'proc': None, 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -258,8 +257,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'proc': 'baseline', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -268,8 +267,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'proc': 'baseline', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -278,8 +277,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'proc': 'stem', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -288,8 +287,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'proc': 'stem', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -298,8 +297,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'proc': 'lem', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -308,8 +307,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText'], 'proc': 'lem', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -318,8 +317,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'proc': None, 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -328,8 +327,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'proc': None, 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -338,8 +337,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'proc': 'baseline', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -348,8 +347,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'proc': 'baseline', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -358,8 +357,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'proc': 'stem', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -368,8 +367,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'proc': 'stem', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -378,8 +377,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'proc': 'lem', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -388,8 +387,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewText', 'verified'], 'proc': 'lem', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -398,8 +397,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'proc': None, 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -408,8 +407,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'proc': None, 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -418,8 +417,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'proc': 'baseline', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -428,8 +427,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'proc': 'baseline', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -438,8 +437,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'proc': 'stem', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -448,8 +447,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'proc': 'stem', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -458,8 +457,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'proc': 'lem', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -468,8 +467,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary'], 'proc': 'lem', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -478,8 +477,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'proc': None, 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -488,8 +487,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'test_size': 0.25, 'proc': None, 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'proc': None, 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -498,8 +497,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'proc': 'baseline', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -508,8 +507,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'test_size': 0.25, 'proc': 'baseline', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'proc': 'baseline', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -518,8 +517,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'proc': 'stem', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -528,8 +527,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'test_size': 0.25, 'proc': 'stem', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'proc': 'stem', 'vectorizer': 'tfidf'}, grid_score]
 
 
 # %%
@@ -538,8 +537,8 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'bow'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'proc': 'lem', 'vectorizer': 'bow'}, grid_score]
 
 
 # %%
@@ -548,21 +547,22 @@ grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=verbose, n_jobs=n_job
 grid.fit(x_train, y_train)
 y_pred = grid.predict(x_test)
 print(classification_report(y_test, y_pred))
-accuracy = grid.score(x_test, y_test)
-compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'test_size': 0.25, 'proc': 'lem', 'vectorizer': 'tfidf'}, accuracy]
+grid_score = grid.score(x_test, y_test)
+compare_list.loc[len(compare_list)] = [grid.best_params_, {'col': ['reviewTextWithSummary', 'verified'], 'proc': 'lem', 'vectorizer': 'tfidf'}, grid_score]
 #######  END OF GENERATED CODE  #######
 
 # %%
+pd.set_option('display.max_colwidth', None)
 compare_list = compare_list.sort_values(
-    by="Accuracy Score", ascending=False
+    by="Grid Score", ascending=False
 ).reset_index(drop=True)
 display(compare_list)
 
 # %%
 print(f"Best Configuration on testing dataset (size={len(df_testing)}):")
-print("Score :: ", compare_list.loc[0]["Accuracy Score"])
-print("SVC   :: ", compare_list.loc[0]["Params"])
-print("data  :: ", compare_list.loc[0]["Config"])
+print("Score :: ", compare_list.loc[0]["Grid Score"])
+print("SVC   :: ", compare_list.loc[0]["Grid Params"])
+print("data  :: ", compare_list.loc[0]["Data config and preprocessing"])
 # %%
 compare_list.to_csv("./results/svm_compare_list.csv", index=False)
 
@@ -593,6 +593,19 @@ df_large = (
 )
 
 # %%
+sample = [
+    "I loved this product, it was amazing",
+    "I hated this product, it was terrible",
+    "This product was okay, it was fine",
+    "I am not sure how I feel about this product",
+    "Apple really outdid themselves with this product",
+    "The engine was really loud, but otherwise the car was fine",
+]
+
+# %% [markdown]
+# ### Top performing model
+
+# %%
 x_train, x_test, y_train, y_test = train_test_split(
     df_large[["reviewTextWithSummary"]],
     df_large["sentiment"],
@@ -601,33 +614,26 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 # %%
-vectorizer = TfidfVectorizer()
-x_train = vectorizer.fit_transform(x_train["reviewTextWithSummary"])
-x_test = vectorizer.transform(x_test["reviewTextWithSummary"])
+vec_testing_top_config = TfidfVectorizer()
+x_train = vec_testing_top_config.fit_transform(x_train["reviewTextWithSummary"])
+x_test = vec_testing_top_config.transform(x_test["reviewTextWithSummary"])
 
 # %%
-svc_testing_df_large = SVC(C=1, gamma=1, kernel="rbf")
+svc_testing_top_config = SVC(C=1, gamma=1, kernel="rbf")
 
 # %%
-svc_testing_df_large.fit(x_train, y_train)
+svc_testing_top_config.fit(x_train, y_train)
 
 # %%
-y_pred = svc_testing_df_large.predict(x_test)
+y_pred = svc_testing_top_config.predict(x_test)
 
 # %%
-sample = [
-    "I loved this product, it was amazing",
-    "I hated this product, it was terrible",
-    "This product was okay, it was fine",
-]
-
-# %%
-sample_ = [vectorizer.transform([x]) for x in sample]
+sample_ = [vec_testing_top_config.transform([x]) for x in sample]
 
 # %%
 for s, p in zip(sample, sample_):
     print(s)
-    print(svc_testing_df_large.predict(p))
+    print(svc_testing_top_config.predict(p))
     print()
 
 # %%
@@ -662,9 +668,9 @@ x_test["reviewTextWithSummary"] = x_test["reviewTextWithSummary"].apply(
 )
 
 # %%
-vectorizer = TfidfVectorizer()
-x_train = vectorizer.fit_transform(x_train["reviewTextWithSummary"])
-x_test = vectorizer.transform(x_test["reviewTextWithSummary"])
+vec_baseline_tfidf = TfidfVectorizer()
+x_train = vec_baseline_tfidf.fit_transform(x_train["reviewTextWithSummary"])
+x_test = vec_baseline_tfidf.transform(x_test["reviewTextWithSummary"])
 
 # %%
 svc_baseline_tfidf = SVC(C=1, gamma=1, kernel="rbf")
@@ -676,17 +682,8 @@ svc_baseline_tfidf.fit(x_train, y_train)
 y_pred = svc_baseline_tfidf.predict(x_test)
 
 # %%
-sample = [
-    "I loved this product, it was amazing",
-    "I hated this product, it was terrible",
-    "This product was okay, it was fine",
-]
-
-# %%
 sample_ = [preprocess_text(x, STOP_WORDS, baseline) for x in sample]
-
-# %%
-sample_ = [vectorizer.transform([x]) for x in sample_]
+sample_ = [vec_baseline_tfidf.transform([x]) for x in sample_]
 
 # %%
 for s, p in zip(sample, sample_):
@@ -697,9 +694,6 @@ for s, p in zip(sample, sample_):
 
 # %%
 print(classification_report(y_test, y_pred))
-
-# %% [markdown]
-#
 
 # %% [markdown]
 # ### Lemmatized with tfidf
@@ -720,9 +714,9 @@ x_test["reviewTextWithSummary"] = x_test["reviewTextWithSummary"].apply(
 )
 
 # %%
-vectorizer = TfidfVectorizer()
-x_train = vectorizer.fit_transform(x_train["reviewTextWithSummary"])
-x_test = vectorizer.transform(x_test["reviewTextWithSummary"])
+vec_lematized_tfidf = TfidfVectorizer()
+x_train = vec_lematized_tfidf.fit_transform(x_train["reviewTextWithSummary"])
+x_test = vec_lematized_tfidf.transform(x_test["reviewTextWithSummary"])
 
 # %%
 svc_lematized_tfidf = SVC(C=1, gamma=1, kernel="rbf")
@@ -734,17 +728,8 @@ svc_lematized_tfidf.fit(x_train, y_train)
 y_pred = svc_lematized_tfidf.predict(x_test)
 
 # %%
-sample = [
-    "I loved this product, it was amazing",
-    "I hated this product, it was terrible",
-    "This product was okay, it was fine",
-]
-
-# %%
 sample_ = [preprocess_text(x, STOP_WORDS, lem) for x in sample]
-
-# %%
-sample_ = [vectorizer.transform([x]) for x in sample_]
+sample_ = [vec_lematized_tfidf.transform([x]) for x in sample_]
 
 # %%
 for s, p in zip(sample, sample_):
@@ -754,9 +739,6 @@ for s, p in zip(sample, sample_):
 
 # %%
 print(classification_report(y_test, y_pred))
-
-# %% [markdown]
-#
 
 # %% [markdown]
 # ### Stemmed with tfidf
@@ -777,9 +759,9 @@ x_test["reviewTextWithSummary"] = x_test["reviewTextWithSummary"].apply(
 )
 
 # %%
-vectorizer = TfidfVectorizer()
-x_train = vectorizer.fit_transform(x_train["reviewTextWithSummary"])
-x_test = vectorizer.transform(x_test["reviewTextWithSummary"])
+vec_stemmed_tfidf = TfidfVectorizer()
+x_train = vec_stemmed_tfidf.fit_transform(x_train["reviewTextWithSummary"])
+x_test = vec_stemmed_tfidf.transform(x_test["reviewTextWithSummary"])
 
 # %%
 svc_stemmed_tfidf = SVC(C=1, gamma=1, kernel="rbf")
@@ -791,17 +773,8 @@ svc_stemmed_tfidf.fit(x_train, y_train)
 y_pred = svc_stemmed_tfidf.predict(x_test)
 
 # %%
-sample = [
-    "I loved this product, it was amazing",
-    "I hated this product, it was terrible",
-    "This product was okay, it was fine",
-]
-
-# %%
 sample_ = [preprocess_text(x, STOP_WORDS, stem) for x in sample]
-
-# %%
-sample_ = [vectorizer.transform([x]) for x in sample_]
+sample_ = [vec_stemmed_tfidf.transform([x]) for x in sample_]
 
 # %%
 for s, p in zip(sample, sample_):
@@ -813,7 +786,64 @@ for s, p in zip(sample, sample_):
 print(classification_report(y_test, y_pred))
 
 # %% [markdown]
-#
+# - All models perform within a percent of each other based on their own test sets
+# - lets compare each of these models on the full dataset
 
 # %% [markdown]
-#
+# ## Testing on full dataset
+
+# %%
+x = df[["reviewTextWithSummary"]]
+y = df["sentiment"]
+
+# %%
+x_top_config = vec_testing_top_config.transform(x["reviewTextWithSummary"])
+x_baseline_tfidf = vec_baseline_tfidf.transform(
+    x["reviewTextWithSummary"].apply(lambda x: preprocess_text(x, STOP_WORDS, baseline))
+)
+x_lematized_tfidf = vec_lematized_tfidf.transform(
+    x["reviewTextWithSummary"].apply(lambda x: preprocess_text(x, STOP_WORDS, lem))
+)
+x_stemmed_tfidf = vec_stemmed_tfidf.transform(
+    x["reviewTextWithSummary"].apply(lambda x: preprocess_text(x, STOP_WORDS, stem))
+)
+
+# %%
+y_pred_top_config = svc_testing_top_config.predict(x_top_config)
+y_pred_baseline_tfidf = svc_baseline_tfidf.predict(x_baseline_tfidf)
+y_pred_lematized_tfidf = svc_lematized_tfidf.predict(x_lematized_tfidf)
+y_pred_stemmed_tfidf = svc_stemmed_tfidf.predict(x_stemmed_tfidf)
+
+# %%
+from sklearn.metrics import f1_score
+print("Top Config")
+print(classification_report(y, y_pred_top_config))
+score_top_config = f1_score(y, y_pred_top_config, average="weighted")
+
+
+# %%
+print("Baseline with tfidf")
+print(classification_report(y, y_pred_baseline_tfidf))
+score_baseline_tfidf = f1_score(y, y_pred_baseline_tfidf, average="weighted")
+
+
+# %%
+print("Lematized with tfidf")
+print(classification_report(y, y_pred_lematized_tfidf))
+score_lematized_tfidf = f1_score(y, y_pred_lematized_tfidf, average="weighted")
+
+
+# %%
+print("Stemmed with tfidf")
+print(classification_report(y, y_pred_stemmed_tfidf))
+score_stemmed_tfidf = f1_score(y, y_pred_stemmed_tfidf, average="weighted")
+
+
+# %%
+print("Scores")
+print("Top Config           :: ", score_top_config)
+print("Baseline with tfidf  :: ", score_baseline_tfidf)
+print("Lematized with tfidf :: ", score_lematized_tfidf)
+print("Stemmed with tfidf   :: ", score_stemmed_tfidf)
+
+
