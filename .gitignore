@@ -5,3 +5,4 @@ data/**
 .nvim.lua
 .project_env
 .todo
+**.sync.py
