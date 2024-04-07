@@ -16,5 +16,5 @@ ax[1].bar(sentiment_data.keys(), sentiment_data.values())
 ax[1].set_xlabel('Sentiment')
 ax[1].set_title('Amazon Product Reviews Sentiment')
 plt.tight_layout()
-plt.show()
+plt.savefig('review_distribution.png')
 
