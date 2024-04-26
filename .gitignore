@@ -7,3 +7,4 @@ data/**
 .project_env
 .todo
 **.sync.py
+**.png
