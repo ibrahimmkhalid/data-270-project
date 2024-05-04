@@ -1,0 +1,33 @@
+Data config and preprocessing,Accuracy,F1 Score,Precision,ROC AUC
+"{'col': ['reviewTextWithSummary'], 'proc': None, 'vectorizer': 'tfidf'}",0.9080379893444521,0.8830965698686187,0.907021002636377,0.9411080674662614
+"{'col': ['reviewTextWithSummary', 'verified'], 'proc': None, 'vectorizer': 'tfidf'}",0.90711141996757,0.8818183903116278,0.906466303827155,0.9392253224989741
+"{'col': ['reviewTextWithSummary'], 'proc': 'stem', 'vectorizer': 'tfidf'}",0.9045633541811443,0.8778331580943401,0.9014285800852195,0.9252827460402099
+"{'col': ['reviewTextWithSummary', 'verified'], 'proc': None, 'vectorizer': 'bow'}",0.9043317118369237,0.8767978657178382,0.9015766815651879,0.9249122125417143
+"{'col': ['reviewTextWithSummary'], 'proc': None, 'vectorizer': 'bow'}",0.9045633541811443,0.8771802594289325,0.9026717181015032,0.9248750212774471
+"{'col': ['reviewTextWithSummary', 'verified'], 'proc': 'stem', 'vectorizer': 'tfidf'}",0.9050266388695853,0.8785425629407259,0.903994778712373,0.9241689258692775
+"{'col': ['reviewTextWithSummary'], 'proc': 'baseline', 'vectorizer': 'tfidf'}",0.905721565902247,0.8792745595443112,0.9065505475811602,0.9239299308256262
+"{'col': ['reviewTextWithSummary'], 'proc': 'lem', 'vectorizer': 'tfidf'}",0.9034051424600417,0.8756560842505967,0.9010566658532569,0.9233885986346744
+"{'col': ['reviewTextWithSummary', 'verified'], 'proc': 'baseline', 'vectorizer': 'tfidf'}",0.9054899235580264,0.8790184448869102,0.907015682253061,0.9222641785394051
+"{'col': ['reviewTextWithSummary', 'verified'], 'proc': 'lem', 'vectorizer': 'tfidf'}",0.9041000694927033,0.876574435262941,0.904650555751638,0.9212652580925164
+"{'col': ['reviewTextWithSummary', 'verified'], 'proc': 'baseline', 'vectorizer': 'bow'}",0.9064164929349084,0.8806289741557015,0.9074268898349415,0.9132448664465272
+"{'col': ['reviewTextWithSummary'], 'proc': 'baseline', 'vectorizer': 'bow'}",0.906184850590688,0.880233184178441,0.907165997046248,0.912976386773939
+"{'col': ['reviewTextWithSummary', 'verified'], 'proc': 'stem', 'vectorizer': 'bow'}",0.90711141996757,0.8820249014788,0.9057732994670024,0.9123224366753458
+"{'col': ['reviewTextWithSummary'], 'proc': 'stem', 'vectorizer': 'bow'}",0.90711141996757,0.8820249014788,0.9057732994670024,0.912294945623986
+"{'col': ['reviewTextWithSummary'], 'proc': 'lem', 'vectorizer': 'bow'}",0.9059532082464674,0.8797961833461883,0.9068786857258392,0.9100636487059096
+"{'col': ['reviewTextWithSummary', 'verified'], 'proc': 'lem', 'vectorizer': 'bow'}",0.9059532082464674,0.8795972440422425,0.9068105134979768,0.9100438239849512
+"{'col': ['reviewText'], 'proc': None, 'vectorizer': 'tfidf'}",0.8839471855455178,0.8342145691834624,0.8840563721699458,0.8879323327434959
+"{'col': ['reviewText', 'verified'], 'proc': None, 'vectorizer': 'tfidf'}",0.8837155432012972,0.8332206527254856,0.8270451274539129,0.8852582410382851
+"{'col': ['reviewText'], 'proc': 'baseline', 'vectorizer': 'tfidf'}",0.8830206161686356,0.8318912512130926,0.8899770085393309,0.8639779975845969
+"{'col': ['reviewText', 'verified'], 'proc': 'baseline', 'vectorizer': 'tfidf'}",0.8827889738244151,0.8319511319589654,0.8651909552496495,0.8622103111059549
+"{'col': ['reviewText'], 'proc': 'lem', 'vectorizer': 'tfidf'}",0.8832522585128562,0.8324029664936262,0.8905513936944105,0.8618962160387351
+"{'col': ['reviewText'], 'proc': 'stem', 'vectorizer': 'tfidf'}",0.8846421125781793,0.8361464781214549,0.8273560539210433,0.8612670710526896
+"{'col': ['reviewText', 'verified'], 'proc': 'lem', 'vectorizer': 'tfidf'}",0.8820940467917535,0.8311612072704851,0.8579357561310812,0.8603087767095557
+"{'col': ['reviewText', 'verified'], 'proc': 'stem', 'vectorizer': 'tfidf'}",0.8830206161686356,0.8336035820947477,0.8529988448127535,0.8592947752842811
+"{'col': ['reviewText', 'verified'], 'proc': None, 'vectorizer': 'bow'}",0.8807041927264304,0.8257525079679574,0.8949488810514683,0.8521849647751077
+"{'col': ['reviewText'], 'proc': None, 'vectorizer': 'bow'}",0.8807041927264304,0.8257525079679574,0.8949488810514683,0.8520233789675705
+"{'col': ['reviewText', 'verified'], 'proc': 'baseline', 'vectorizer': 'bow'}",0.8816307621033125,0.827942999567068,0.8956680516287725,0.8357362413441279
+"{'col': ['reviewText'], 'proc': 'baseline', 'vectorizer': 'bow'}",0.8816307621033125,0.827942999567068,0.8956680516287725,0.8347925258307787
+"{'col': ['reviewText', 'verified'], 'proc': 'stem', 'vectorizer': 'bow'}",0.8820940467917535,0.8299829252792843,0.8806407662053011,0.8344035140712599
+"{'col': ['reviewText'], 'proc': 'stem', 'vectorizer': 'bow'}",0.8820940467917535,0.8299829252792843,0.8806407662053011,0.833915668937342
+"{'col': ['reviewText', 'verified'], 'proc': 'lem', 'vectorizer': 'bow'}",0.8813991197590919,0.827400369055071,0.8954881338387544,0.8313228533647278
+"{'col': ['reviewText'], 'proc': 'lem', 'vectorizer': 'bow'}",0.8813991197590919,0.827400369055071,0.8954881338387544,0.8307688168656018
