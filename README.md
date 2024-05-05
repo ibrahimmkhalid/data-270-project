@@ -5,7 +5,7 @@
 - `data/download.py` - interactive data downloading tool from Amazon reviews dataset source
 - `data/merge_datasets.py` - combine select .json.gz files to combined.csv
 - `data/combined.csv` - combination of Fashion, Beauty, Appliances, Arts and crafts, Musical instruments, and Software product categories
-- `graphs/` - code files to create graphs and saved images of those graphs
+- `models/` - pickle files for models, vectorizers
 - `results/` - results of eda, testing, modelling, etc
 ---
 
