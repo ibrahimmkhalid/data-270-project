@@ -8,4 +8,9 @@
 - `graphs/` - code files to create graphs and saved images of those graphs
 - `results/` - results of eda, testing, modelling, etc
 ---
+
+# To run .pkl files:
+
+- `model_logreg.pkl` - Data must go through preprocessing and vectorized using TfidfVectorizer()
+
 Data Analytics Processes Project. Jan 2024 - May 2024 
