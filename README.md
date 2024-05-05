@@ -11,6 +11,6 @@
 
 # To run .pkl files:
 
-- `model_logreg.pkl` - Data must go through preprocessing and vectorized using TfidfVectorizer()
+- `model_logreg.pkl` - Training data was based on the baseline reviewTextSummary, transformed by a TfidfVectorizer()
 
 Data Analytics Processes Project. Jan 2024 - May 2024 
