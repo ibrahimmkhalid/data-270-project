@@ -11,6 +11,6 @@
 
 # To run .pkl files:
 
-- `model_logreg.pkl` - Training data was based on the baseline reviewTextSummary, transformed by a TfidfVectorizer()
+- `model_logreg.pkl` - Training data was based on the baseline reviewTextSummary, transformed by a TfidfVectorizer(). Running the notebook should properly create the test data.
 
 Data Analytics Processes Project. Jan 2024 - May 2024 
