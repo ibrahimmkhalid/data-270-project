@@ -1,6 +1,6 @@
 # DATA270
 
-- `eda_*` - Files that perform exploratory data analyssis
+- `eda_*` - Files that perform exploratory data analysis
 - `model_*` - Files implementing a specific model
 - `data/download.py` - interactive data downloading tool from Amazon reviews dataset source
 - `data/merge_datasets.py` - combine select .json.gz files to combined.csv
