@@ -7,6 +7,7 @@
 - `data/combined.csv` - combination of Fashion, Beauty, Appliances, Arts and crafts, Musical instruments, and Software product categories
 - `models/` - pickle files for models, vectorizers
 - `results/` - results of eda, testing, modelling, etc
+- `requirements.txt` - installs all required libraries, except cuML and cuDF for Google Colab
 ---
 
 # To run .pkl files:
