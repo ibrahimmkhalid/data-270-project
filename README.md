@@ -12,5 +12,7 @@
 # To run .pkl files:
 
 - `model_logreg.pkl` - Training data was based on the baseline reviewTextSummary, transformed by a TfidfVectorizer(). Running the notebook should properly create the test data.
+- `model_svm_clf.pkl` and `modle_svm_vectorizer.pkl` - Running the `model_svm_final.ipynb` notebook on **Google Colab** in order will run until the pickle file as long as it is found on the specified path
+  - need to change the `work_path` to appropriate value
 
 Data Analytics Processes Project. Jan 2024 - May 2024 
